@@ -1,9 +1,9 @@
 <div class="grid grid-cols-1 md:grid-cols-1 gap-6 lg:gap-8">
 
     <!-- Mensaje flash -->
-     
+
     @if (session()->has('message'))
-       
+
         <div class="p-4 mb-2 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
         <span class="font-medium">Realizado!</span> {{ session('message') }}.
         </div>
@@ -20,17 +20,17 @@
             <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Generar Excel</h2>
 
             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                Consulta la API de https://developers.syscom.mx/docs, y genera un archivo Excel en base a su respuesta.
+                Consulta el manual del API para los parámetros disponibles.
             </p>
 
-            <button 
-                wire:click="handleClick" 
+            <button
+                wire:click="handleClick"
                 class="mt-5 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-blue-400"
                 wire:target="handleClick"
                 wire:loading.attr="disabled" >
                 <span wire:loading.remove>
                     <i class="fa fa-file fa-sping" aria-hidden="true"></i>
-                    Generar Excel 
+                    Generar Excel
                 </span>
                 <span wire:loading>
                     <i class="fa fa-cog fa-spin"></i>
@@ -39,7 +39,7 @@
             </button>
         </div>
 
-        
+
     </div>
 
 
