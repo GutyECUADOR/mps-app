@@ -62,29 +62,65 @@ class GenerateExcelForm extends Component
         //break; // Detiene el bucle después de la primera iteración FOR TESTS
 
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
+        $activeWorksheet = $spreadsheet->getActiveSheet();
         // Encabezados
-        $headers = array_keys($listaproductos[0]);
-        $sheet->fromArray($headers, NULL, 'A1');
+        $activeWorksheet->setCellValue('A1', 'PARTNUM');
+        $activeWorksheet->setCellValue('B1', 'IDCATEGORIA');
+        $activeWorksheet->setCellValue('C1', 'CATEGORIA');
+        $activeWorksheet->setCellValue('D1', 'IDSUBCATEGORIA');
+        $activeWorksheet->setCellValue('E1', 'SUBCATEGORIA');
+        $activeWorksheet->setCellValue('F1', 'TITULO');
+        $activeWorksheet->setCellValue('G1', 'DESCRIPCION');
+        $activeWorksheet->setCellValue('H1', 'MARCA');
+        $activeWorksheet->setCellValue('I1', 'MARCAHOMOLOGADA');
+        $activeWorksheet->setCellValue('J1', 'OFERTAPRECIOMINIMO');
+        $activeWorksheet->setCellValue('K1', 'OFERTAPRECIOMAXIMO');
+        $activeWorksheet->setCellValue('L1', 'PRECIO');
+        $activeWorksheet->setCellValue('M1', 'MONEDA');
+        $activeWorksheet->setCellValue('N1', 'CANTIDAD');
+        $activeWorksheet->setCellValue('O1', 'ARRAYBODEGA');
+        $activeWorksheet->setCellValue('P1', 'XMLATRIBUTOS');
+        $activeWorksheet->setCellValue('Q1', 'IMAGENES');
+        $activeWorksheet->setCellValue('R1', 'ETIQUETAS');
 
-        // Escribir los datos de cada producto
-        $rowIndex = 2;
+        /* foreach ($activeWorksheet->getColumnIterator() as $column) {
+            $activeWorksheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
+        }
+ */
+        $activeWorksheet->getStyle('A1:R1')->getFont()->setBold(true);
+
+        $row = 2;
         foreach ($listaproductos as $producto) {
-            // Convertir campos anidados a JSON string o algo legible
-            foreach ($producto as $key => $value) {
-                if (is_array($value) || is_object($value)) {
-                    $producto[$key] = json_encode($value, JSON_UNESCAPED_UNICODE);
-                }
-            }
-            $sheet->fromArray(array_values($producto), NULL, 'A' . $rowIndex);
-            $rowIndex++;
+
+            $activeWorksheet->setCellValue('A'.$row, $producto['PartNum']);
+            $activeWorksheet->setCellValue('B'.$row, $producto['IdFamilia']);
+            $activeWorksheet->setCellValue('C'.$row, $producto['Familia']);
+            $activeWorksheet->setCellValue('D'.$row, $producto['IdCategoria']);
+            $activeWorksheet->setCellValue('E'.$row, $producto['Categoria']);
+            $activeWorksheet->setCellValue('F'.$row, $producto['Name']); // Titulo
+            $activeWorksheet->setCellValue('G'.$row, $producto['Description']);
+            $activeWorksheet->setCellValue('H'.$row, $producto['Marks']);
+            $activeWorksheet->setCellValue('I'.$row, $producto['MarcaHomologada']);
+            $activeWorksheet->setCellValue('J'.$row, $producto['Salesminprice']);
+            $activeWorksheet->setCellValue('K'.$row, $producto['Salesmaxprice']);
+            $activeWorksheet->setCellValue('L'.$row, $producto['precio']);
+            $activeWorksheet->setCellValue('M'.$row, $producto['CurrencyDef']);
+            $activeWorksheet->setCellValue('N'.$row, $producto['Quantity']);
+            $activeWorksheet->setCellValue('O'.$row, json_encode($producto['ListaProductosBodega'], JSON_UNESCAPED_SLASHES));
+            $activeWorksheet->setCellValue('P'.$row, $producto['xmlAttributes']);
+            $activeWorksheet->setCellValue('Q'.$row, json_encode($producto['Imagenes'], JSON_UNESCAPED_SLASHES));
+            $activeWorksheet->setCellValue('R'.$row, $producto['slug']);
+
+           /*  $activeWorksheet->setCellValue('I'.$row, number_format($producto['precios']['precio_especial'] ?? 0, 2, ',') );
+           */
+            $row++;
+
         }
 
         session()->flash('message', '¡El archivo se ha generado correctamente!');
         $this->isSubmitting = false;
 
-        $fileName = 'productos.xlsx';
+        $fileName = 'API_Tixore_final.xlsx';
         $writer = new Xlsx($spreadsheet);
         $filePath = storage_path($fileName);
         $writer->save($filePath);
