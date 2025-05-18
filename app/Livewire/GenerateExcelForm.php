@@ -108,7 +108,8 @@ class GenerateExcelForm extends Component
             $activeWorksheet->setCellValue('N'.$row, $producto['Quantity']);
             $activeWorksheet->setCellValue('O'.$row, json_encode($producto['ListaProductosBodega'], JSON_UNESCAPED_SLASHES));
             $activeWorksheet->setCellValue('P'.$row, $producto['xmlAttributes']);
-            $activeWorksheet->setCellValue('Q'.$row, json_encode($producto['Imagenes'], JSON_UNESCAPED_SLASHES));
+            $imagenes = str_replace(['"', ',', '[', ']'], '', json_encode($producto['Imagenes'], JSON_UNESCAPED_SLASHES));
+            $activeWorksheet->setCellValue('Q'.$row, $imagenes);
             $activeWorksheet->setCellValue('R'.$row, $producto['slug']);
 
            /*  $activeWorksheet->setCellValue('I'.$row, number_format($producto['precios']['precio_especial'] ?? 0, 2, ',') );
