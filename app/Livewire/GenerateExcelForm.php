@@ -22,7 +22,7 @@ class GenerateExcelForm extends Component
 
         // Inicializar el cliente HTTP Guzzle
         $client = new Client([
-            'base_uri' => 'https://shopcommerce.mps.com.co:7965',
+            'base_uri' => env('BASE_URL_API_SHOP'),
         ]);
 
         $response = $client->post('/Token', [

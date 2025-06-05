@@ -1,0 +1,22 @@
+{
+    "AccountNum": "79580718",
+    "NombreClienteEntrega": "DIGITAL TECNOLOGY S.A.S",
+    "ClienteEntrega": "79580718",
+    "TelefonoEntrega": "9999999",
+    "DireccionEntrega": "Calle 1",
+    "StateId": "11",
+    "CountyId": "001",
+    "RecogerEnSitio": 0,
+    "EntregaUsuarioFinal": 0,
+    "dlvTerm": "",
+    "dlvmode": "",
+    "Observaciones": "Pedido Web Nro. XXXXXX",
+    "listaPedidoDetalle": [
+        {
+            "PartNum": "Archer T2U",
+            "Cantidad": 1,
+            "Marks": "TPLINK",
+            "Bodega": "BCOTA"
+        }
+    ]
+}

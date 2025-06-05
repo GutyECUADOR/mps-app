@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\SysComController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WooCommerceOrderController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +20,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/* Generacion de Excel */
 Route::get('/generateExcel', [SysComController::class, 'index'])->name('generateExcel');
 Route::get('/createExcel', [SysComController::class, 'create'])->name('createExcel');
 
+/* Generacion de Ordenes traidas de WooCommerce a API */
+
+Route::resource('woocommerce-orders', WooCommerceOrderController::class);;
