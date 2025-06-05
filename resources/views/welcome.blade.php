@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>SysCom API - Excel Generator</title>
+        <title>MSP APP - WooCommerce Integration</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
