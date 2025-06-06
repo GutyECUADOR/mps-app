@@ -48,7 +48,9 @@ class FetchApiDataWooCommerce extends Command
                     $wooCommerceOrder = WooCommerceOrder::create($orderData);
 
                     //Guardar la direccion de envio
-                    //$wooCommerceOrder->billingAddress()->create($orderData['billing']);
+                    //$orderData['billing']["wc_order_id"] = $orderData['woocommerce_id'];
+                    $wooCommerceOrder->billingAddress()->create($orderData['billing']);
+                    
 
                     // Iteramos y creamos los line items usando la relación
                     if (isset($orderData['line_items'])) {

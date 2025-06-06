@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('woo_commerce_billing_address', function (Blueprint $table) {
+        Schema::create('woo_commerce_billing_addresses', function (Blueprint $table) {
             $table->id();
 
             // Clave foránea que conecta con una orden específica.
             // unique() forza la relación de uno a uno (una orden solo puede tener una dirección de facturación).
-            $table->foreignId('wc_order_id')->unique()->constrained('woo_commerce_orders')->onDelete('cascade');
+            $table->foreignId('woo_commerce_order_id')->unique()->constrained('woo_commerce_orders')->onDelete('cascade');
             
             $table->string('first_name');
             $table->string('last_name');
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('woo_commerce_billing_address');
+        Schema::dropIfExists('woo_commerce_billing_addresses');
     }
 };

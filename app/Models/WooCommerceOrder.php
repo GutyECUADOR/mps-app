@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class WooCommerceOrder extends Model
 {
@@ -57,5 +58,11 @@ class WooCommerceOrder extends Model
     public function lineItems(): HasMany
     {
         return $this->hasMany(WooCommerceLineItem::class);
+    }
+
+    // Relación: Una orden tiene muchos items
+    public function billingAddress(): HasOne
+    {
+        return $this->hasOne(WooCommerceBillingAddress::class);
     }
 }
