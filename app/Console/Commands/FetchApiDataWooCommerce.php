@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\WooCommerceOrder;
 use App\Services\ApiWooCommerceService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -30,16 +31,24 @@ class FetchApiDataWooCommerce extends Command
         $this->info('Iniciando la consulta de datos de WooCommerce...');
 
         // Llamamos al servicio para obtener los datos
-        $data = $apiWooCommerceService->fetchExternalData();
+        $ordersData = $apiWooCommerceService->fetchExternalData();
         Log::build([
-                'driver' => 'single',
-                'path' => storage_path('logs/ApiWooCommerceService.log'),
-            ])->info(json_encode($data));
+            'driver' => 'single',
+            'path' => storage_path('logs/ApiWooCommerceService.log'),
+        ])->info(json_encode($ordersData));
 
-        if ($data) {
+        if ($ordersData) {
             $this->info('Datos obtenidos exitosamente.');
-            
-
+            foreach ($ordersData as $orderData) {
+                // Renombramos 'id' a 'woocommerce_id' para que coincida con nuestra columna
+                $orderData['woocommerce_id'] = $orderData['id'];
+                unset($orderData['id']);
+                // Creamos la WooCommerceOrder - CABECERA
+                // Solo crear la orden si no existe el woocommerce_id
+                if (!WooCommerceOrder::where('woocommerce_id', $orderData['woocommerce_id'])->exists()) {
+                    $wooCommerceOrder = WooCommerceOrder::create($orderData);
+                }
+            }
         } else {
             $this->error('No se pudieron obtener los datos de WooCommerce o no existen nuevas ordenes.');
         }
