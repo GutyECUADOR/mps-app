@@ -23,23 +23,30 @@ class ApiMpsService
 
     public function createOrders()
     {
-
-        $wc_orders = WooCommerceOrder::where('status', 'completed')
-            ->whereNull('procesing_mps_date')
+        $wc_orders = WooCommerceOrder::with(['billingAddress', 'lineItems'])
+            ->where('status', 'completed')
+            ->whereNull('processing_mps_date')
             ->get();
 
         // Mapeo de WooCommerceOrder a Pedido
         $pedidos = $wc_orders->map(function ($order) {
             return new Pedido([
-                'AccountNum'           => $order->customer_id,
-                'NombreClienteEntrega' => $order->shipping_name ?? $order->billing_name ?? $order->customer_name,
-                'ClienteEntrega'       => $order->shipping_address_1 ?? $order->billing_address_1,
-                'TelefonoEntrega'      => $order->shipping_phone ?? $order->billing_phone ?? $order->customer_phone,
-                'DireccionEntrega'     => $order->shipping_address_1 ?? $order->billing_address_1,
+                'AccountNum'           => '1600505505', // Numero de DNI
+                'NombreClienteEntrega' => $order->billingAddress->first_name . ' ' . $order->billingAddress->last_name,
+                'ClienteEntrega'       => '1600505505', // Numero de DNI
+                'TelefonoEntrega'      => $order->billingAddress->phone,
+                'DireccionEntrega'     => $order->billingAddress->address_1 . ' ' . $order->billingAddress->address_2,
+                'StateId'              => $order->billingAddress->state,
+                'CountyId'             => $order->billingAddress->city,
+                'RecogerEnSitio'       => 0, // Asumimos que no se recoge en sitio
+                'EntregaUsuarioFinal'  => 0, // Asumimos que no hay entrega a usuario final
+                'dlvTerm'              => '',
+                'dlvmode'              => '',  
+                'Observaciones'        => 'Pedido Web Nro. '.$order->woocommerce_id,
             ]);
         });
 
-        dd($wc_orders);
+        dd($pedidos);
         return null;
 
         try {
