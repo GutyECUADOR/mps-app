@@ -47,6 +47,19 @@ class FetchApiDataWooCommerce extends Command
                 // Solo crear la orden si no existe el woocommerce_id
                 if (!WooCommerceOrder::where('woocommerce_id', $orderData['woocommerce_id'])->exists()) {
                     $wooCommerceOrder = WooCommerceOrder::create($orderData);
+
+                    // Iteramos y creamos los line items usando la relación
+                    if (isset($orderData['line_items'])) {
+                        foreach ($orderData['line_items'] as $itemData) {
+                            // Renombramos 'id' del item
+                            $itemData['wc_id'] = $itemData['id'];
+                            unset($itemData['id']);
+
+                            // Usamos la relación para crear el item.
+                            // Laravel asignará automáticamente el 'wc_order_id'.
+                            $wooCommerceOrder->lineItems()->create($itemData);
+                        }
+                    }
                 }
             }
         } else {

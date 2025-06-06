@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('woo_commerce_line_items', function (Blueprint $table) {
             $table->id(); // ID local
             // Clave foránea para relacionar con la orden principal
-            $table->foreignId('woo_commerce_orders_id')->constrained()->onDelete('cascade');
+            $table->foreignId('woo_commerce_order_id')->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('wc_id')->unique(); // El ID del line_item que viene de WooCommerce
             $table->text('name');
             $table->unsignedBigInteger('product_id');
