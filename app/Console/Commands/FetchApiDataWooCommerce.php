@@ -38,7 +38,8 @@ class FetchApiDataWooCommerce extends Command
 
         if ($data) {
             $this->info('Datos obtenidos exitosamente.');
-            // Aquí podrías procesar y almacenar los datos en la base de datos local
+            
+
         } else {
             $this->error('No se pudieron obtener los datos de WooCommerce o no existen nuevas ordenes.');
         }
