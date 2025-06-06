@@ -38,7 +38,6 @@ class FetchApiDataWooCommerce extends Command
         ])->info(json_encode($ordersData));
 
         if ($ordersData) {
-            $this->info('Datos obtenidos exitosamente.');
             foreach ($ordersData as $orderData) {
                 // Renombramos 'id' a 'woocommerce_id' para que coincida con nuestra columna
                 $orderData['woocommerce_id'] = $orderData['id'];
@@ -47,6 +46,9 @@ class FetchApiDataWooCommerce extends Command
                 // Solo crear la orden si no existe el woocommerce_id
                 if (!WooCommerceOrder::where('woocommerce_id', $orderData['woocommerce_id'])->exists()) {
                     $wooCommerceOrder = WooCommerceOrder::create($orderData);
+
+                    //Guardar la direccion de envio
+                    //$wooCommerceOrder->billingAddress()->create($orderData['billing']);
 
                     // Iteramos y creamos los line items usando la relación
                     if (isset($orderData['line_items'])) {
@@ -62,6 +64,7 @@ class FetchApiDataWooCommerce extends Command
                     }
                 }
             }
+            $this->info('Datos obtenidos exitosamente.');
         } else {
             $this->error('No se pudieron obtener los datos de WooCommerce o no existen nuevas ordenes.');
         }

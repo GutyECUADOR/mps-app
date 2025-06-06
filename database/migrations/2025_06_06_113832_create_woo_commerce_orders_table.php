@@ -40,6 +40,7 @@ return new class extends Migration
             $table->dateTime('date_completed')->nullable();
             $table->dateTime('date_paid')->nullable();
             $table->string('cart_hash')->nullable();
+            $table->dateTime('procesing_mps_date')->nullable();
             $table->timestamps(); // Campos created_at y updated_at locales
         });
     }

@@ -28,7 +28,7 @@ class ApiWooCommerceService
                 'path' => storage_path('logs/ApiWooCommerceService.log'),
             ])->info('Ordenes de WooCommerce hasta la fecha:'.$currentDate);
 
-            $response = $this->client->get("/wp-json/wc/v3/orders?after={$currentDate}", [
+            $response = $this->client->get("/wp-json/wc/v3/orders?after={$currentDate}&status=completed", [
                 'auth' => [
                     env('APP_KEY_API_WOOCOMMERCE'),
                     env('APP_SECRET_API_WOOCOMMERCE')
