@@ -28,8 +28,10 @@ class Pedido extends Model
     /**
      * Define la relación de uno a muchos con PedidoDetalle.
      */
-    public function detalles(): HasMany
+    public function listaPedidoDetalle(): HasMany
     {
         return $this->hasMany(PedidoDetalle::class);
     }
+
+
 }

@@ -28,25 +28,37 @@ class ApiMpsService
             ->whereNull('processing_mps_date')
             ->get();
 
-        // Mapeo de WooCommerceOrder a Pedido
+        // Mapeo de WooCommerceOrder a Pedido, mostrando también la relación con PedidoDetalle
         $pedidos = $wc_orders->map(function ($order) {
-            return new Pedido([
-                'AccountNum'           => '1600505505', // Numero de DNI
+            $pedidoDetalles = $order->lineItems->map(function ($item) {
+            return [
+                'PartNum'  => $item->product_id,   // Ajusta según el campo correcto
+                'Cantidad' => $item->quantity,     // Ajusta según el campo correcto
+                'Marks'    => '',                  // Completa según tu lógica
+                'Bodega'   => '',                  // Completa según tu lógica
+            ];
+            })->toArray();
+
+            return [
+            'pedido' => [
+                'AccountNum'           => '79580718', // Numero de Cuenta
                 'NombreClienteEntrega' => $order->billingAddress->first_name . ' ' . $order->billingAddress->last_name,
-                'ClienteEntrega'       => '1600505505', // Numero de DNI
+                'ClienteEntrega'       => '79580718', // Numero de DNI
                 'TelefonoEntrega'      => $order->billingAddress->phone,
                 'DireccionEntrega'     => $order->billingAddress->address_1 . ' ' . $order->billingAddress->address_2,
                 'StateId'              => $order->billingAddress->state,
                 'CountyId'             => $order->billingAddress->city,
-                'RecogerEnSitio'       => 0, // Asumimos que no se recoge en sitio
-                'EntregaUsuarioFinal'  => 0, // Asumimos que no hay entrega a usuario final
+                'RecogerEnSitio'       => 0,
+                'EntregaUsuarioFinal'  => 0,
                 'dlvTerm'              => '',
-                'dlvmode'              => '',  
-                'Observaciones'        => 'Pedido Web Nro. '.$order->woocommerce_id,
-            ]);
+                'dlvmode'              => '',
+                'Observaciones'        => 'Pedido Web Nro. ' . $order->woocommerce_id,
+            ],
+            'pedido_detalle' => $pedidoDetalles
+            ];
         });
 
-        dd($pedidos);
+       dd($pedidos);
         return null;
 
         try {
