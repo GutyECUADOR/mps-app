@@ -30,17 +30,37 @@ class ApiMpsService
 
         // Mapeo de WooCommerceOrder a Pedido, mostrando también la relación con PedidoDetalle
         $pedidos = $wc_orders->map(function ($order) {
-            $pedidoDetalles = $order->lineItems->map(function ($item) {
+            $listaPedidoDetalle = $order->lineItems->map(function ($item) {
+
+            // Consulta a API de WooCommerce para obtener detalles del producto
+            $productDetails = null;
+            try {
+                $wcClient = new Client([
+                    'base_uri' => env('BASE_URL_API_WOOCOMMERCE'),
+                    'timeout'  => 5.0,
+                    'auth'     => [env('APP_KEY_API_WOOCOMMERCE'), env('APP_SECRET_API_WOOCOMMERCE')],
+                ]);
+                $response = $wcClient->get("/wp-json/wc/v3/products/{$item->product_id}");
+                $productDetails = json_decode($response->getBody(), true);
+
+                Log::build([
+                    'driver' => 'single',
+                    'path' => storage_path('logs/ApiWooCommerceService.log'),
+                ])->info('Marca producto consultado: ' . json_encode($productDetails['brands'][0]['name'] ?? 'No disponible'));
+            } catch (\Exception $e) {
+                Log::error('Error al consultar producto WooCommerce: ' . $e->getMessage());
+            }
+
             return [
-                'PartNum'  => $item->product_id,   // Ajusta según el campo correcto
+                'PartNum'  => $item->sku,   // Ajusta según el campo correcto
                 'Cantidad' => $item->quantity,     // Ajusta según el campo correcto
-                'Marks'    => '',                  // Completa según tu lógica
-                'Bodega'   => '',                  // Completa según tu lógica
+                'Marks'    => $productDetails['brands'][0]['name'],                  // Completa según tu lógica
+                'Bodega'   => 'BCOTA',                  // Completa según tu lógica
             ];
             })->toArray();
 
-            return [
-            'pedido' => [
+            return (object)[
+            'listaPedido' => [
                 'AccountNum'           => '79580718', // Numero de Cuenta
                 'NombreClienteEntrega' => $order->billingAddress->first_name . ' ' . $order->billingAddress->last_name,
                 'ClienteEntrega'       => '79580718', // Numero de DNI
@@ -54,12 +74,11 @@ class ApiMpsService
                 'dlvmode'              => '',
                 'Observaciones'        => 'Pedido Web Nro. ' . $order->woocommerce_id,
             ],
-            'pedido_detalle' => $pedidoDetalles
+            'listaPedidoDetalle' => $listaPedidoDetalle
             ];
         });
 
-       dd($pedidos);
-        return null;
+
 
         try {
 
@@ -80,22 +99,26 @@ class ApiMpsService
             $result = json_decode($body, true);
             $token = $result['access_token']; // Get Access Token
 
+            // Log de pedidos
+            Log::build([
+                'driver' => 'single',
+                'path' => storage_path('logs/ApiWooCommerceService.log'),
+            ])->info('Pedidos enviados a MPS: ' . json_encode($pedidos));
 
-            /* GET Orders and  */
-
-            // Consulta de lista de marcas
             $response = $this->client->post('/api/WebApi/RealizarPedido', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $token, // Set the Authorization header
                     'Accept'        => 'application/json', // Optional: Specify that you expect JSON response
+                    'Content-Type'  => 'application/json', // Especifica que el cuerpo es JSON
                 ],
+                'json' => $pedidos, // Agrega el objeto $pedidos al cuerpo de la consulta
             ]);
 
             // Get productos
             $body = $response->getBody();
             $response = json_decode($body, true);
 
-            return null;
+            return $response;
         } catch (RequestException $e) {
             // Registramos el error para poder depurarlo
             Log::error('Error al obtener datos de la API externa: ' . $e->getMessage());
