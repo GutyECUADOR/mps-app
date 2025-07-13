@@ -31,11 +31,21 @@ class PostMPSOrders extends Command
         // Llamamos al servicio para crear las órdenes
         $response = $apiMpsService->createOrders();
 
-        if ($response) {
-            $this->info('Órdenes creadas exitosamente en MPS.');
+        if ($response && is_array($response)) {
+            $hasFail = false;
+            foreach ($response as $item) {
+                if (isset($item['valor']) && $item['valor'] === 'FAIL') {
+                    $this->error('Error al crear las órdenes en MPS: ' . ($item['mensaje'] ?? 'Error desconocido.'));
+                    $hasFail = true;
+                }
+            }
+            if (!$hasFail) {
+                $this->info('Órdenes creadas exitosamente en MPS.');
+                $this->line('Respuesta del API:');
+                $this->line(print_r($response, true));
+            }
         } else {
             $this->error('Error al crear las órdenes en MPS.');
         }
     }
-    
 }
