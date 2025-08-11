@@ -16,8 +16,7 @@ class ApiMpsService
     {
         // Inicializamos GuzzleHttp\Client
         $this->client = new Client([
-            'base_uri' => env('BASE_URL_API_SHOP'),
-            'timeout'  => 5.0,
+            'base_uri' => env('BASE_URL_API_SHOP')
         ]);
     }
 
@@ -49,6 +48,12 @@ class ApiMpsService
             $token = $result['access_token'];
 
             foreach ($wc_orders as $order) {
+
+                Log::build([
+                    'driver' => 'single',
+                    'path' => storage_path('logs/ApiWooCommerceService.log'),
+                ])->info('Orden seleccionada: ' . json_encode($order));
+
                 $listaPedidoDetalle = $order->lineItems->map(function ($item) {
                     $productDetails = null;
                     try {
@@ -96,6 +101,7 @@ class ApiMpsService
                     'listaPedido' => [$pedido]
                 ];
 
+                /* PEDIDO ENVIADO A MPS */
                 Log::build([
                     'driver' => 'single',
                     'path' => storage_path('logs/ApiWooCommerceService.log'),
@@ -113,6 +119,27 @@ class ApiMpsService
 
                     $body = $response->getBody();
                     $apiResponse = json_decode($body, true);
+
+                    Log::build([
+                        'driver' => 'single',
+                        'path' => storage_path('logs/ApiWooCommerceService.log'),
+                    ])->info('Status 200: ' . json_encode($order));
+
+                    // Si la respuesta es 200 OK y contiene "valor": "0", actualiza la columna
+                    if ($response->getStatusCode() === 200 && isset($apiResponse['valor']) && $apiResponse['valor'] == "0") {
+                        Log::build([
+                            'driver' => 'single',
+                            'path' => storage_path('logs/ApiWooCommerceService.log'),
+                        ])->info('Orden actualizada: ' . json_encode($order));
+
+                        $order->processing_mps_date = now();
+                        $order->save();
+                    }
+
+                    // Agrega el id de la orden al apiResponse
+                    $apiResponse['order_id'] = $order->id;
+                    $apiResponse['woocomerce_idwoocommerce_id'] = $order->woocommerce_id;
+
                     $API_responses[] = $apiResponse;
                 } catch (RequestException $e) {
                     Log::error('Error al enviar pedido a MPS: ' . $e->getMessage());
@@ -131,6 +158,11 @@ class ApiMpsService
             ])->error('Error al obtener token de la API externa BUILD: ' . $e->getMessage());
             return null;
         }
+
+        Log::build([
+            'driver' => 'single',
+            'path' => storage_path('logs/ApiWooCommerceService.log'),
+        ])->info('Respuestas de MPS Crear Ordenes: ' . json_encode($API_responses));
 
         return $API_responses;
     }

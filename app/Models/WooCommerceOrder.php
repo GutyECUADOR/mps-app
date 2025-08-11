@@ -40,6 +40,7 @@ class WooCommerceOrder extends Model
         'date_completed',
         'date_paid',
         'cart_hash',
+        'processing_mps_date'
     ];
 
     // Casts para convertir tipos de datos automáticamente

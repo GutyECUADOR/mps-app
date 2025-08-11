@@ -14,15 +14,15 @@ class ApiWooCommerceService
     {
         // Inicializamos GuzzleHttp\Client
         $this->client = new Client([
-            'base_uri' => env('BASE_URL_API_WOOCOMMERCE'),
-            'timeout'  => 5.0,
+            'base_uri' => env('BASE_URL_API_WOOCOMMERCE')
         ]);
     }
 
     public function fetchExternalData(): ?array
     {
         try {
-            $currentDate = now()->subMonth()->format('Y-m-d\T00:00:00-05:00');
+            //$currentDate = now()->subMonth()->format('Y-m-d\T00:00:00-05:00'); // ULTIMO MES
+            $currentDate = now()->format('Y-m-d\T00:00:00-05:00');
             Log::build([
                 'driver' => 'single',
                 'path' => storage_path('logs/ApiWooCommerceService.log'),
