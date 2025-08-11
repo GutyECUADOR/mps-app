@@ -7,6 +7,14 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+
+## Custom Commands
+
+- php artisan app:fetch-api-data-woo-commerce  (Consulta las ordenes de WooComerce del dia actual en status Complete)
+- php artisan app:create-mps-orders  (Envía al endpoind api/Webapi/RealizarPedido las ordenes con proccessing_mps_date en null)
+- Revisar ApiWooCommerceService.log para traza de ejecución
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

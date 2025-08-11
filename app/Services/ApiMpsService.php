@@ -126,7 +126,7 @@ class ApiMpsService
                     ])->info('Status 200: ' . json_encode($order));
 
                     // Si la respuesta es 200 OK y contiene "valor": "0", actualiza la columna
-                    if ($response->getStatusCode() === 200 && isset($apiResponse['valor']) && $apiResponse['valor'] == "0") {
+                    if ($response->getStatusCode() === 200 && isset($apiResponse[0]['valor']) && $apiResponse[0]['valor'] == "0") {
                         Log::build([
                             'driver' => 'single',
                             'path' => storage_path('logs/ApiWooCommerceService.log'),
