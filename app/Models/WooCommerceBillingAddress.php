@@ -14,6 +14,7 @@ class WooCommerceBillingAddress extends Model
         'wc_order_id',
         'first_name',
         'last_name',
+        'dni',
         'company',
         'address_1',
         'address_2',

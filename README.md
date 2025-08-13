@@ -14,6 +14,11 @@
 - php artisan app:create-mps-orders  (Envía al endpoind api/Webapi/RealizarPedido las ordenes con proccessing_mps_date en null)
 - Revisar ApiWooCommerceService.log para traza de ejecución
 
+## CRON JOB Hostinger
+
+/usr/bin/php /home/u938983641/domains/tixore.com/public_html/mps-app/artisan app:fetch-api-data-woo-commerce
+
+/usr/bin/php /home/u938983641/domains/tixore.com/public_html/mps-app/artisan app:create-mps-orders
 
 ## About Laravel
 

@@ -82,9 +82,9 @@ class ApiMpsService
                 })->toArray();
 
                 $pedido = [
-                    'AccountNum'           => '79580718',
+                    'AccountNum'           => '901912861', // Cedula del account num
                     'NombreClienteEntrega' => $order->billingAddress->first_name . ' ' . $order->billingAddress->last_name,
-                    'ClienteEntrega'       => '79580718',
+                    'ClienteEntrega'       => $order->billingAddress->dni, // Cédula del cliente final
                     'TelefonoEntrega'      => $order->billingAddress->phone,
                     'DireccionEntrega'     => $order->billingAddress->address_1 . ' ' . $order->billingAddress->address_2,
                     'StateId'              => $order->billingAddress->state,

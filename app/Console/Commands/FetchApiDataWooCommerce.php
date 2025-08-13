@@ -47,9 +47,22 @@ class FetchApiDataWooCommerce extends Command
                 if (!WooCommerceOrder::where('woocommerce_id', $orderData['woocommerce_id'])->exists()) {
                     $wooCommerceOrder = WooCommerceOrder::create($orderData);
 
+
+                    Log::build([
+                        'driver' => 'single',
+                        'path' => storage_path('logs/ApiWooCommerceService.log'),
+                    ])->info('MetaData DNI: '. json_encode($orderData['meta_data'][1]['value']));
+
                     //Guardar la direccion de envio
-                    $wooCommerceOrder->billingAddress()->create($orderData['billing']);
+                    $billingAddress = $orderData['billing'];
+
+                    // Agregar la llave 'dni' al objeto billing si existe en meta_data
+                   
+                    $billingAddress['dni'] = $orderData['meta_data'][1]['value'];
                     
+
+                    $wooCommerceOrder->billingAddress()->create($billingAddress);
+
                     // Creamos la WooCommerceOrder - DETALLE
                     if (isset($orderData['line_items'])) {
                         foreach ($orderData['line_items'] as $itemData) {
