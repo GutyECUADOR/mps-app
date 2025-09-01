@@ -27,7 +27,12 @@ class ApiMpsService
             ->whereNull('processing_mps_date')
             ->get();
 
+
         $API_responses = [];
+        Log::build([
+                'driver' => 'single',
+                'path' => storage_path('logs/ApiWooCommerceService.log'),
+            ])->info('WC Ordenes a crear: ' . json_encode($wc_orders));
 
         try {
             // Obtener token solo una vez
@@ -126,7 +131,7 @@ class ApiMpsService
                     ])->info('Status 200: ' . json_encode($order));
 
                     // Si la respuesta es 200 OK y contiene "valor": "0", actualiza la columna
-                    if ($response->getStatusCode() === 200 && isset($apiResponse[0]['valor']) && $apiResponse[0]['valor'] == "0") {
+                    if ($response->getStatusCode() === 200 && isset($apiResponse[0]['valor']) && $apiResponse[0]['valor'] == "1") {
                         Log::build([
                             'driver' => 'single',
                             'path' => storage_path('logs/ApiWooCommerceService.log'),
